@@ -4,6 +4,7 @@
 #include <QMenu>
 #include "cbasewindow.h"
 #include "window.h"
+#include "cmenubar.h"
 
 namespace {
 #define CUSTOMER_TITLEBAR
@@ -25,14 +26,26 @@ int main(int argc, char *argv[])
     //tt.setMenuBar(pWgt);
     //tt.setCenterWidget(pWgt);
     //tt.setStatusBar(pWgt);
-    QMenuBar* pBar = new QMenuBar();
-    pBar->addAction("File");
+    /*QMenuBar* pBar = new QMenuBar();
+    pBar->addAction("File");*/
     QMenu* pMenu = new QMenu("About");
     pMenu->addAction("VS 2017");
     pMenu->addAction("Qt");
-    pBar->addMenu(pMenu);
+    //pBar->addMenu(pMenu);
 
-    tt.setMenuBar(pBar);
+    //tt.setMenuBar(pBar);
+
+    QMenu* m2 = new QMenu("File");
+    m2->addAction("New");
+    m2->addAction("Create");
+    m2->addSeparator();
+    m2->addAction("Exit");
+
+    CMenuBar* pMenuBar = new CMenuBar(&tt);
+    pMenuBar->addMenu(m2);
+    pMenuBar->addMenu(pMenu);
+
+    tt.setMenuBar(pMenuBar);
 #endif
 
     tt.show();
