@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/images">
+        <file alias="exit.png">Resources/images/exit.png</file>
+        <file alias="maximize.png">Resources/images/maximize.png</file>
+        <file alias="middle.png">Resources/images/middle.png</file>
+        <file alias="minimize.png">Resources/images/minimize.png</file>
+    </qresource>
+    <qresource prefix="/qss">
+        <file>Resources/qss/win.qss</file>
+    </qresource>
+</RCC>

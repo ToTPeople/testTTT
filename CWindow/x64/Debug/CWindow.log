@@ -1,0 +1,10 @@
+﻿  cbasewindow.cpp
+  cmenubar.cpp
+  ctitlebar.cpp
+  window.cpp
+  moc_window.cpp
+  moc_cbasewindow.cpp
+  moc_ctitlebar.cpp
+  qrc_Resource.cpp
+    正在创建库 F:\Project\github\testTTT\x64\Debug\CWindow.lib 和对象 F:\Project\github\testTTT\x64\Debug\CWindow.exp
+  CWindow.vcxproj -> F:\Project\github\testTTT\x64\Debug\CWindow.dll
