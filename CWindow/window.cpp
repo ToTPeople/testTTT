@@ -5,6 +5,7 @@
 #include <QPalette>
 #include "ui_window.h"
 #include "common_define.h"
+#include "cmenubar.h"
 
 
 class CWindowPrivate
@@ -228,6 +229,18 @@ void CWindow::setMenuBar(QWidget * pMenuBar)
 {
     p.replaceWidget(p.m_pMenuBar, pMenuBar, MENUBAR_INDEX, FIXED_MENUBAR_HEIGHT);
     p.m_pMenuBar = pMenuBar;
+    if (NULL != pMenuBar && pMenuBar->inherits("CMenuBar")) {
+        CMenuBar* pBar = static_cast<CMenuBar*>(pMenuBar);
+        if (NULL != pBar) {
+            // style sheet
+            QFile file(kszQssMenuBar);
+            if (file.open(QFile::ReadOnly)) {
+                pBar->setStyleSheet(file.readAll());
+                file.close();
+            }
+            pBar->initStyle();
+        }
+    }
 }
 
 QWidget * CWindow::getMenuBar()

@@ -15,7 +15,7 @@ INCLUDEPATH += $${SolutionDir}/CWindow \
     ./GeneratedFiles \
     . \
     ./GeneratedFiles/$$(ConfigurationName)
-LIBS += -L"$${SolutionDir}/x64/Debug" \
+LIBS += -L"$${SolutionDir}/x64/debug" \
     -lCWindow
 DEPENDPATH += .
 MOC_DIR += ./GeneratedFiles/$$(ConfigurationName)

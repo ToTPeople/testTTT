@@ -4,7 +4,7 @@
 
 
 class CWindowPrivate;
-class QTCLASSLIBRARY_EXPORT CWindow : public QWidget
+class  CWindow : public QWidget
 {
     Q_OBJECT
 public:

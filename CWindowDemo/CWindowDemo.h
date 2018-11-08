@@ -1,9 +1,8 @@
 #pragma once
+#include <QWidget>
+#include "ui_CenterWidget.h"
 
-#include <QtWidgets/QMainWindow>
-#include "ui_CWindowDemo.h"
-
-class CWindowDemo : public QMainWindow
+class CWindowDemo : public QWidget
 {
     Q_OBJECT
 
@@ -11,5 +10,5 @@ public:
     CWindowDemo(QWidget *parent = Q_NULLPTR);
 
 private:
-    Ui::CWindowDemoClass ui;
+    Ui::wgtCenter       ui;
 };

@@ -18,5 +18,52 @@ QPushButton#btnWindowExit, QPushButton#btnExit {
 
 
 QPushButton:hover {
-	background-color:rgb(96, 96, 96);
+	background-color	: yellow;
 }
+
+QPushButton:pressed {
+	background-color	: red;
+}
+
+CMenuItem {
+	background-color	: gray;
+}
+
+CMenuItem:hover {
+	background-color	: green;
+}
+
+CMenuItem:pressed {
+	background-color	: red;
+}
+
+/*
+QWidget#myMenuBar {
+	qproperty-menuNormalBg	  :gray;
+	qproperty-menuHoverBg	  :green
+}
+*/
+
+/*
+QPushButton#btnFile, QPushButton#btnAbout {
+	margin	: 0px;
+	padding	: 0px;
+	border	: 0px;
+	background-color	: gray;
+}
+
+QPushButton#btnFile:hover, QPushButton#btnAbout:hover {
+	background-color	: green;
+}
+
+QPushButton#btnFile:pressed, QPushButton#btnAbout:pressed {
+	background-color	: red;
+}
+*/
+QPushButton::menu-indicator {
+	image	: None;
+	margin	: 0px;
+	padding	: 0px;
+}
+
+	

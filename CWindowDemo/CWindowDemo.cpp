@@ -1,7 +1,7 @@
 #include "CWindowDemo.h"
 
 CWindowDemo::CWindowDemo(QWidget *parent)
-    : QMainWindow(parent)
+    : QWidget(parent)
 {
     ui.setupUi(this);
 }

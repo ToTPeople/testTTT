@@ -235,7 +235,20 @@
        <height>45</height>
       </size>
      </property>
-     <layout class="QHBoxLayout" name="hLayoutMenuBar"/>
+     <layout class="QHBoxLayout" name="hLayoutMenuBar">
+      <property name="spacing">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>9</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+     </layout>
     </widget>
    </item>
    <item>
