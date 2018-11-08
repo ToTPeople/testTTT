@@ -15,7 +15,6 @@
 
 // qss
 const char* const kszQssWindows     = ":/qss/Resources/qss/win.qss";
-const char* const kszQssMenuBar     = ":/qss/menubar.qss";
 
 // object name
 const char* const kszWindowTitle    = "labelWindowTitle";

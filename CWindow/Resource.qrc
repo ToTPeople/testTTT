@@ -7,6 +7,5 @@
     </qresource>
     <qresource prefix="/qss">
         <file>Resources/qss/win.qss</file>
-        <file alias="menubar.qss">Resources/qss/menubar.qss</file>
     </qresource>
 </RCC>

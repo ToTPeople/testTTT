@@ -3,6 +3,12 @@
 #include <QPushButton>
 #include "common_define.h"
 
+#if defined Q_OS_WIN
+#include "ui_titlebar.h"
+#else
+#include "ui_mactitlebar.h"
+#endif
+
 class CTitleBarPrivate
 {
     friend CTitleBar;
@@ -16,18 +22,16 @@ public:
 public:
     CTitleBar*          m_pTitleBar;
 
-    QLabel*             m_pLabelTitle;
-    QPushButton*        m_pBtnMinimize;
-    QPushButton*        m_pBtnMaximize;
-    QPushButton*        m_pBtnExit;
+public:
+#if defined Q_OS_WIN
+    Ui::wgtTitleBar     m_uiTitleBar;
+#else
+    Ui::wgtMacTitleBar  m_uiTitleBar;
+#endif
 };
 
 CTitleBarPrivate::CTitleBarPrivate(CTitleBar* parent /* = NULL */)
     : m_pTitleBar(parent)
-    , m_pLabelTitle(NULL)
-    , m_pBtnExit(NULL)
-    , m_pBtnMaximize(NULL)
-    , m_pBtnMinimize(NULL)
 {
     init();
 }
@@ -43,34 +47,27 @@ void CTitleBarPrivate::init()
         return;
     }
 
-    m_pLabelTitle = new QLabel(m_pTitleBar);
-    if (NULL != m_pLabelTitle) {
-        m_pLabelTitle->setObjectName(kszWindowTitle);
-    }
+    m_uiTitleBar.setupUi(m_pTitleBar);
 
-    m_pBtnMinimize = new QPushButton(m_pTitleBar);
-    if (NULL != m_pBtnMinimize) {
-        m_pBtnMinimize->setObjectName(kszWindowMinimize);
-        QObject::connect(m_pBtnMinimize, SIGNAL(clicked()), m_pTitleBar, SIGNAL(sigOnMinimizeBtnClick()));
+    if (NULL != m_uiTitleBar.btnExit) {
+        QObject::connect(m_uiTitleBar.btnExit, SIGNAL(clicked())
+            , m_pTitleBar, SIGNAL(sigOnExitBtnClick()));
     }
-
-    m_pBtnMaximize = new QPushButton(m_pTitleBar);
-    if (NULL != m_pBtnMaximize) {
-        m_pBtnMaximize->setObjectName(kszWindowMaximize);
-        QObject::connect(m_pBtnMaximize, SIGNAL(clicked()), m_pTitleBar, SIGNAL(sigOnMaximizeBtnClick()));
+    if (NULL != m_uiTitleBar.btnMin) {
+        QObject::connect(m_uiTitleBar.btnMin, SIGNAL(clicked())
+            , m_pTitleBar, SIGNAL(sigOnMinimizeBtnClick()));
     }
-
-    m_pBtnExit = new QPushButton(m_pTitleBar);
-    if (NULL != m_pBtnExit) {
-        m_pBtnExit->setObjectName(kszWindowExit);
-        QObject::connect(m_pBtnExit, SIGNAL(clicked()), m_pTitleBar, SIGNAL(sigOnExitBtnClick()));
+    if (NULL != m_uiTitleBar.btnMax) {
+        QObject::connect(m_uiTitleBar.btnMax, SIGNAL(clicked())
+            , m_pTitleBar, SIGNAL(sigOnMaximizeBtnClick()));
     }
-
-    // test -------------------------------------
-    m_pLabelTitle->setText("Test");
-    m_pBtnExit->move(50, 0);
-    m_pBtnMinimize->move(100, 0);
-    m_pBtnMaximize->move(200, 0);
+    // test -------------------------------
+    m_uiTitleBar.labelTitle->setText("Windows Title");
+    m_pTitleBar->setAutoFillBackground(true);
+    QPalette pal = m_pTitleBar->palette();
+    pal.setBrush(QPalette::Background, QBrush(Qt::red));
+    m_pTitleBar->setPalette(pal);
+    // test -------------------------------
 }
 
 CTitleBar::CTitleBar(QWidget* parent /*= NULL*/)
@@ -83,4 +80,11 @@ CTitleBar::CTitleBar(QWidget* parent /*= NULL*/)
 CTitleBar::~CTitleBar()
 {
     delete &p;
+}
+
+void CTitleBar::setMaximizeIconVisiable(bool bVisiable)
+{
+    if (!bVisiable && NULL != p.m_uiTitleBar.btnMax) {
+        p.m_uiTitleBar.btnMax->hide();
+    }
 }

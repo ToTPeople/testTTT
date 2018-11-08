@@ -12,10 +12,14 @@ HEADERS += ./qtclasslibrary_global.h \
     ./window.h \
     ./cbasewindow.h \
     ./ctitlebar.h \
-    ./common_define.h
+    ./common_define.h \
+    ./cmenuitem.h
 SOURCES += ./cbasewindow.cpp \
     ./cmenubar.cpp \
     ./ctitlebar.cpp \
-    ./window.cpp
-FORMS += ./window.ui
+    ./window.cpp \
+    ./cmenuitem.cpp
+FORMS += ./window.ui \
+    ./titlebar.ui \
+    ./mactitlebar.ui
 RESOURCES += Resource.qrc

@@ -6,6 +6,7 @@
 #include "ui_window.h"
 #include "common_define.h"
 #include "cmenubar.h"
+#include "ctitlebar.h"
 
 
 class CWindowPrivate
@@ -37,6 +38,7 @@ public:
     bool   m_bMouseResizePressed;                   // 设置大小的按下
     QPoint m_ResizePressPos;                        // 设置大小鼠标按下的点
 
+public:
     CWindow*        m_pWindow;
     Ui::Window      m_ui;
     QWidget*        m_pTitleBar;
@@ -114,54 +116,6 @@ void CWindowPrivate::init()
     }
 
     m_ui.setupUi(m_pWindow);
-#ifdef Q_OS_CYGWIN
-    if (NULL != m_ui.wgtMacTitleBar) {
-        if (NULL != m_ui.btnMacExit) {
-            QObject::connect(m_ui.btnMacExit, SIGNAL(clicked()), m_pWindow, SLOT(slotOnExitClick()));
-        }
-        if (NULL != m_ui.btnMacMin) {
-            QObject::connect(m_ui.btnMacMin, SIGNAL(clicked()), m_pWindow, SLOT(slotOnMinimizeClick()));
-        }
-        if (NULL != m_ui.btnMacMax) {
-            QObject::connect(m_ui.btnMacMax, SIGNAL(clicked()), m_pWindow, SLOT(slotOnMaximizeClick()));
-        }
-        // test -------------------------------
-        m_ui.wgtMacTitleBar->setAutoFillBackground(true);
-        QPalette pal = m_ui.wgtMacTitleBar->palette();
-        pal.setBrush(QPalette::Background, QBrush(Qt::yellow));
-        m_ui.wgtMacTitleBar->setPalette(pal);
-        // test -------------------------------
-    }
-    if (NULL != m_ui.wgtTitleBar) {
-        m_ui.vLayoutWindow->removeWidget(m_ui.wgtTitleBar);
-        DELETE(m_ui.wgtTitleBar);
-    }
-    m_pTitleBar = m_ui.wgtMacTitleBar;
-#else
-    if (NULL != m_ui.wgtTitleBar) {
-        if (NULL != m_ui.btnExit) {
-            QObject::connect(m_ui.btnExit, SIGNAL(clicked()), m_pWindow, SLOT(slotOnExitClick()));
-        }
-        if (NULL != m_ui.btnMin) {
-            QObject::connect(m_ui.btnMin, SIGNAL(clicked()), m_pWindow, SLOT(slotOnMinimizeClick()));
-        }
-        if (NULL != m_ui.btnMax) {
-            QObject::connect(m_ui.btnMax, SIGNAL(clicked()), m_pWindow, SLOT(slotOnMaximizeClick()));
-        }
-        // test -------------------------------
-        m_ui.labelTitle->setText("lkjalkdjsfka");
-        m_ui.wgtTitleBar->setAutoFillBackground(true);
-        QPalette pal = m_ui.wgtTitleBar->palette();
-        pal.setBrush(QPalette::Background, QBrush(Qt::red));
-        m_ui.wgtTitleBar->setPalette(pal);
-        // test -------------------------------
-    }
-    if (NULL != m_ui.wgtMacTitleBar) {
-        m_ui.vLayoutWindow->removeWidget(m_ui.wgtMacTitleBar);
-        DELETE(m_ui.wgtMacTitleBar);
-    }
-    m_pTitleBar = m_ui.wgtTitleBar;
-#endif
     m_pMenuBar = m_ui.wgtMenuBar;
     m_pCenterWidget = m_ui.wgtCenterWidget;
     m_pStatusBar = m_ui.wgtStatusBar;
@@ -218,6 +172,10 @@ void CWindow::setTitleBar(QWidget * pTitleBar)
 
     p.replaceWidget(p.m_pTitleBar, pTitleBar, TITLEBAR_INDEX, FIXED_TITLEBAR_HEIGHT);
     p.m_pTitleBar = pTitleBar;
+
+    QObject::connect(pTitleBar, SIGNAL(sigOnExitBtnClick()), this, SLOT(slotOnExitClick()));
+    QObject::connect(pTitleBar, SIGNAL(sigOnMinimizeBtnClick()), this, SLOT(slotOnMinimizeClick()));
+    QObject::connect(pTitleBar, SIGNAL(sigOnMaximizeBtnClick()), this, SLOT(slotOnMaximizeClick()));
 }
 
 QWidget * CWindow::getTitleBar()
@@ -229,18 +187,6 @@ void CWindow::setMenuBar(QWidget * pMenuBar)
 {
     p.replaceWidget(p.m_pMenuBar, pMenuBar, MENUBAR_INDEX, FIXED_MENUBAR_HEIGHT);
     p.m_pMenuBar = pMenuBar;
-    if (NULL != pMenuBar && pMenuBar->inherits("CMenuBar")) {
-        CMenuBar* pBar = static_cast<CMenuBar*>(pMenuBar);
-        if (NULL != pBar) {
-            // style sheet
-            QFile file(kszQssMenuBar);
-            if (file.open(QFile::ReadOnly)) {
-                pBar->setStyleSheet(file.readAll());
-                file.close();
-            }
-            pBar->initStyle();
-        }
-    }
 }
 
 QWidget * CWindow::getMenuBar()

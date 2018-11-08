@@ -4,7 +4,7 @@
 
 
 class CWindowPrivate;
-class  CWindow : public QWidget
+class QTCLASSLIBRARY_EXPORT CWindow : public QWidget
 {
     Q_OBJECT
 public:
@@ -33,7 +33,6 @@ public:
     virtual void mousePressEvent(QMouseEvent *event);
     virtual void mouseReleaseEvent(QMouseEvent *event);
     virtual void mouseMoveEvent(QMouseEvent *event);
-
 
 private:
     CWindowPrivate&         p;

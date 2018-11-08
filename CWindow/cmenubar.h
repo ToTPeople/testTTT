@@ -8,40 +8,32 @@ class CMenuBarPrivate;
 class QTCLASSLIBRARY_EXPORT CMenuBar : public QWidget
 {
     Q_OBJECT
-
-    Q_PROPERTY(QColor menuNormalBg READ menuNormalBg WRITE setMenuNormalBg)
-    Q_PROPERTY(QColor menuHoverBg READ menuHoverBg WRITE setMenuHoverBg)
-    Q_PROPERTY(QColor menuSelectedBg READ menuSelectedBg WRITE setMenuSelectedBg)
-    //Q_PROPERTY(QColor menuNormalBg READ menuNormalBg WRITE setMenuNormalBg)
+    // menu item space
+    Q_PROPERTY(int menuItemSpace READ menuItemSpace WRITE setMenuItemSpace)
 public:
     CMenuBar(QWidget* parent = NULL);
     ~CMenuBar();
 
 public:
-    void initStyle();
-
     void addAction(const QString& strAction);
-    QAction* addAction(const QString &text, const QObject *receiver, const char* member, const QKeySequence &shortcut);
+    void addAction(const QString &text, const QObject *receiver, const char* member, const QKeySequence &shortcut);
     void addMenu(QMenu* pMenu);
 
 public:
     virtual bool eventFilter(QObject *watched, QEvent *event);
     virtual void resizeEvent(QResizeEvent *event);
-    virtual void changeEvent(QEvent *event);
+    virtual void changeEvent(QEvent *event); // ≤‚ ‘”√£¨ø……æ≥˝
 
-    bool event(QEvent *event) Q_DECL_OVERRIDE;
+    bool event(QEvent *event) Q_DECL_OVERRIDE; // ≤‚ ‘”√£¨ø……æ≥˝
+
+public slots:
+    void slotShortcut();            // ≤‚ ‘”√£¨ø……æ≥˝
 
 public:
-    QColor menuNormalBg() const;
-    void setMenuNormalBg(QColor color);
+    int menuItemSpace();
+    void setMenuItemSpace(int nSpace);
 
-    QColor menuHoverBg() const;
-    void setMenuHoverBg(QColor color);
-
-    QColor menuSelectedBg() const;
-    void setMenuSelectedBg(QColor color);
-
-private:
+protected:
     CMenuBarPrivate&            p;
 };
 

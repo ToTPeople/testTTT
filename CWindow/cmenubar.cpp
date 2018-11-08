@@ -10,13 +10,12 @@
 #include <QFile>
 #include <QMouseEvent>
 #include <QCursor>
-#include <QRgb>
 #include "common_define.h"
 #include "cmenuitem.h"
 
 
 namespace {
-    const int g_nFixedMenuItemWidth = 100;
+    //const int g_nFixedMenuItemWidth = 100;
 }
 
 class CMenuBarPrivate
@@ -27,29 +26,17 @@ public:
     ~CMenuBarPrivate();
 
 public:
-    QString productStyle(CMenuItem* pItem, const QString& strAttr, const QString& value);
-
-public:
+    // CMenuItem
     void insertMenuBarItem(CMenuItem* pMenuBarItem, int nIndex = -1);
 
     CMenuItem* posAt(QPoint pos);
-    CMenuItem* clickMenuItem();
 
 public:
     CMenuBar*               m_pMenuBar;
     QHBoxLayout*            m_pHLayout;
-    QVector<CMenuItem*>   m_vecMenusItem;
-    int                     m_nCnt;
-    CMenuItem*            m_pPreSelectedItem;
-    bool                    m_bIsDown;
-
-public:
-    bool                    m_bMenuNormalBgSet;
-    QColor                  m_colorMenuNormalBg;
-    bool                    m_bMenuHoverBgSet;
-    QColor                  m_colorMenuHoverBg;
-    bool                    m_bMenuSelectedBgSet;
-    QColor                  m_colorMenuSelectedBg;
+    QVector<CMenuItem*>     m_vecMenusItem;
+    int                     m_nCnt;                 // menu item count
+    CMenuItem*              m_pPreSelectedItem;     // current selected menu item
 };
 
 CMenuBarPrivate::CMenuBarPrivate(CMenuBar* pMenuBar)
@@ -57,10 +44,6 @@ CMenuBarPrivate::CMenuBarPrivate(CMenuBar* pMenuBar)
     , m_pHLayout(NULL)
     , m_nCnt(0)
     , m_pPreSelectedItem(NULL)
-    , m_bIsDown(false)
-    , m_bMenuHoverBgSet(false)
-    , m_bMenuNormalBgSet(false)
-    , m_bMenuSelectedBgSet(false)
 {
     if (NULL != m_pMenuBar) {
         m_pHLayout = new QHBoxLayout(m_pMenuBar);
@@ -78,25 +61,18 @@ CMenuBarPrivate::~CMenuBarPrivate()
     m_pMenuBar = NULL;
 }
 
-//QString CMenuBarPrivate::productStyle(QPushButton* pItem, const QString& strAttr, const QString& value)
-//{
-//    QString strStyle;
-//    if (NULL != pItem) {
-//        strStyle = QString("QPushButton#%1%2%3 { background-color : #%4 }")
-//            .arg(pItem->objectName()).arg((strAttr.isEmpty() ? "" : ":")).arg(strAttr).arg(value);
-//    }
-//    return strStyle;
-//}
-
 void CMenuBarPrivate::insertMenuBarItem(CMenuItem* pMenuBarItem, int nIndex /* = -1 */)
 {
     if (NULL == pMenuBarItem) {
         return;
     }
 
-    pMenuBarItem->setFixedWidth(g_nFixedMenuItemWidth);
+    //pMenuBarItem->setFixedWidth(g_nFixedMenuItemWidth);
     pMenuBarItem->installEventFilter(m_pMenuBar); ///////////////////////
     pMenuBarItem->menu()->installEventFilter(m_pMenuBar);
+    pMenuBarItem->menu()->menuAction()->installEventFilter(m_pMenuBar);
+
+    //QObject::connect(pMenuBarItem, SIGNAL(triggered(bool)), m_pMenuBar, SLOT(slotShortcut()));
 
     if (nIndex <= 0 || nIndex >= m_nCnt) {
         m_vecMenusItem.push_back(pMenuBarItem);
@@ -143,59 +119,16 @@ CMenuItem* CMenuBarPrivate::posAt(QPoint pos)
     return pTarget;
 }
 
-CMenuItem* CMenuBarPrivate::clickMenuItem()
-{
-    CMenuItem* pItem = NULL;
-    QVector<CMenuItem*>::iterator it = m_vecMenusItem.begin();
-    for (; it != m_vecMenusItem.end(); ++it) {
-        if ((*it)->isDown()) {
-            pItem = *it;
-            break;
-        }
-    }
-
-    return pItem;
-}
-
 CMenuBar::CMenuBar(QWidget* parent /*= NULL*/)
     : QWidget(parent)
     , p(*new CMenuBarPrivate(this))
 {
-    //// style sheet
-    //QFile file(kszQssMenuBar);
-    //if (file.open(QFile::ReadOnly)) {
-    //    setStyleSheet(file.readAll());
-    //    file.close();
-    //}
 }
 
 
 CMenuBar::~CMenuBar()
 {
     delete &p;
-}
-
-void CMenuBar::initStyle()
-{
-    /*QVector<QPushButton*>::iterator it = p.m_vecMenusItem.begin();
-    QPushButton* pMenu;
-    QString strStyle;
-    for (; it != p.m_vecMenusItem.end(); ++it) {
-        pMenu = *it;
-        if (NULL != pMenu) {
-            if (p.m_bMenuNormalBgSet) {
-                strStyle += p.productStyle(pMenu, "", QString::number(p.m_colorMenuNormalBg.rgba(), 16));
-            }
-            if (p.m_bMenuHoverBgSet) {
-                strStyle += p.productStyle(pMenu, "hover", QString::number(p.m_colorMenuHoverBg.rgba(), 16));
-            }
-            if (p.m_bMenuSelectedBgSet) {
-                strStyle += p.productStyle(pMenu, "pressed", QString::number(p.m_colorMenuSelectedBg.rgba(), 16));
-            }
-            qDebug() << "-=-=-=-=- : " << strStyle;
-            pMenu->setStyleSheet(strStyle);
-        }
-    }*/
 }
 
 void CMenuBar::addAction(const QString & strAction)
@@ -207,19 +140,24 @@ void CMenuBar::addAction(const QString & strAction)
     addMenu(pMenu);
 }
 
-QAction * CMenuBar::addAction(const QString & text, const QObject * receiver, const char * member, const QKeySequence & shortcut)
+void CMenuBar::addAction(const QString & text, const QObject * receiver, const char * member, const QKeySequence & shortcut)
 {
+    if (text.isNull() || text.isEmpty()) {
+        return;
+    }
 
+    QMenu* pMenu = new QMenu(tr(text.toLatin1()));
+    addMenu(pMenu);
+    if (NULL == receiver && NULL == member && NULL == pMenu->menuAction()) {
+        return;
+    }
 
-    QAction *action = new QAction(text, this);
-//#ifdef QT_NO_SHORTCUT
-//    Q_UNUSED(shortcut);
-//#else
-//    action->setShortcut(shortcut);
-//#endif
-//    QObject::connect(action, SIGNAL(triggered(bool)), receiver, member);
-//    addAction(action);
-    return action;
+#ifdef QT_NO_SHORTCUT
+    Q_UNUSED(shortcut);
+#else
+    pMenu->menuAction()->setShortcut(shortcut);
+#endif
+    QObject::connect(pMenu->menuAction(), SIGNAL(triggered(bool)), receiver, member);
 }
 
 void CMenuBar::addMenu(QMenu * pMenu)
@@ -233,7 +171,6 @@ void CMenuBar::addMenu(QMenu * pMenu)
         return;
     }
     pNewItem->setText(tr(pMenu->title().toLatin1()));
-    pNewItem->setObjectName("btn" + pMenu->title());
     pNewItem->setMenu(pMenu);
 
     p.insertMenuBarItem(pNewItem);
@@ -247,6 +184,7 @@ bool CMenuBar::eventFilter(QObject * watched, QEvent * event)
 
     int eType = event->type();
     if (watched->inherits("QPushButton")) {
+        //qDebug() << "==$$$$$$$$$$$$-- button : " << event->type();
         QPushButton* pPressedItem = static_cast<QPushButton*>(watched);
         /*if (QEvent::MouseMove != eType && QEvent::Polish != eType && QEvent::FontChange != eType
             && QEvent::PaletteChange != eType && QEvent::HoverMove != eType
@@ -260,9 +198,9 @@ bool CMenuBar::eventFilter(QObject * watched, QEvent * event)
             qDebug() << "======= button: " << watched << ", event type: " << event->type();
         }*/
         if (QEvent::MouseButtonPress == eType && NULL != pPressedItem) {
-            qDebug() << "==$$$$$$$$$$$$-- press : " << pPressedItem
+            /*qDebug() << "==$$$$$$$$$$$$-- press : " << pPressedItem
                 << ", p.m_pPreSelectedItem: " << p.m_pPreSelectedItem
-                << ", isDown: " << pPressedItem->isDown();
+                << ", isDown: " << pPressedItem->isDown();*/
             if (p.m_pPreSelectedItem == pPressedItem) {
                 p.m_pPreSelectedItem->setDown(false);
                 p.m_pPreSelectedItem = NULL;
@@ -270,13 +208,32 @@ bool CMenuBar::eventFilter(QObject * watched, QEvent * event)
             else {
                 p.m_pPreSelectedItem = static_cast<CMenuItem*>(pPressedItem);
                 pPressedItem->setDown(true);
-                //pPressedItem->repaint();
                 QPoint globalPos = pPressedItem->mapToGlobal(QPoint(0, pPressedItem->height()));
                 pPressedItem->menu()->popup(globalPos);
             }
         }
+        else if (QEvent::Shortcut == eType && NULL != pPressedItem) {
+            //if (pPressedItem != p.m_pPreSelectedItem) {
+                //qDebug() << "==$$$$$$$$$$$$-- shortcut : " << event->type();
+                // hide previout menu
+                if (NULL != p.m_pPreSelectedItem) {
+                    p.m_pPreSelectedItem->setDown(false);
+                    p.m_pPreSelectedItem->menu()->hide();
+                }
+                // popup menu
+                {
+                    p.m_pPreSelectedItem = static_cast<CMenuItem*>(pPressedItem);
+                    pPressedItem->setDown(true);
+                    QPoint globalPos = pPressedItem->mapToGlobal(QPoint(0, pPressedItem->height()));
+                    pPressedItem->menu()->popup(globalPos);
+                    pPressedItem->setDown(true);
+                }
+            //}
+            return true;
+        }
     }
     else if (watched->inherits("QMenu")) {
+        //qDebug() << "==$$$$$$$$$$$$-- menu : " << event->type();
         if (QEvent::MouseMove == event->type()) {
             if (watched != p.m_pPreSelectedItem) {
                 QMouseEvent* pMouseEvent = static_cast<QMouseEvent*>(event);
@@ -297,6 +254,7 @@ bool CMenuBar::eventFilter(QObject * watched, QEvent * event)
         }
         else if (QEvent::Hide == event->type()) {
             if (NULL != p.m_pPreSelectedItem) {
+                //qDebug() << "==$$$$$$$$$$$$-- menu hide : " << event->type();
                 // cursor not locate in menuitem, should set here; or set by menuitem self
                 QPoint cursorPos = QCursor::pos();
                 QPoint st = p.m_pPreSelectedItem->mapToGlobal(QPoint());
@@ -309,8 +267,11 @@ bool CMenuBar::eventFilter(QObject * watched, QEvent * event)
             }
         }
     }
+    else if (watched->inherits("Action")) {
+        qDebug() << "==$$$$$$$$$$$$-- Action : " << event->type();
+    }
     else if (NULL != watched) {
-        //qDebug() << "==$$$$$$$$$$$$-- : " << watched << ", event type: " << event->type();
+        qDebug() << "==$$$$$$$$$$$$-- : " << watched << ", event type: " << event->type();
     }
 
     return QWidget::eventFilter(watched, event);
@@ -333,59 +294,22 @@ void CMenuBar::changeEvent(QEvent * event)
     QWidget::changeEvent(event);
 }
 
-QColor CMenuBar::menuNormalBg() const
+int CMenuBar::menuItemSpace()
 {
-    return p.m_colorMenuNormalBg;
+    return p.m_pHLayout->spacing();
 }
 
-void CMenuBar::setMenuNormalBg(QColor color)
+void CMenuBar::setMenuItemSpace(int nSpace)
 {
-    p.m_bMenuNormalBgSet = true;
-    p.m_colorMenuNormalBg = color;
+    if (nSpace < 0) {
+        nSpace = 0;
+    }
+    p.m_pHLayout->setSpacing(nSpace);
 }
 
-QColor CMenuBar::menuHoverBg() const
+void CMenuBar::slotShortcut()
 {
-    return p.m_colorMenuHoverBg;
-}
-
-void CMenuBar::setMenuHoverBg(QColor color)
-{
-    p.m_bMenuHoverBgSet = true;
-    p.m_colorMenuHoverBg = color;
-}
-
-QColor CMenuBar::menuSelectedBg() const
-{
-    return p.m_colorMenuSelectedBg;
-}
-
-void CMenuBar::setMenuSelectedBg(QColor color)
-{
-    qDebug() << "==---------------=======---------------- set Bg";
-    p.m_bMenuSelectedBgSet = true;
-    p.m_colorMenuSelectedBg = color;
-    /*QVector<QPushButton*>::iterator it = p.m_vecMenusItem.begin();
-    QPushButton* pMenu;
-    QString strStyle;
-    QString strTmp;
-    for (; it != p.m_vecMenusItem.end(); ++it) {
-        pMenu = *it;
-        if (NULL != pMenu) {
-            strStyle = "";
-            if (p.m_bMenuNormalBgSet) {
-                strStyle += p.productStyle(pMenu, "", QString::number(p.m_colorMenuNormalBg.rgba(), 16));
-            }
-            if (p.m_bMenuHoverBgSet) {
-                strStyle += p.productStyle(pMenu, "hover", QString::number(p.m_colorMenuHoverBg.rgba(), 16));
-            }
-            if (p.m_bMenuSelectedBgSet) {
-                strStyle += p.productStyle(pMenu, "pressed", QString::number(p.m_colorMenuSelectedBg.rgba(), 16));
-            }
-            qDebug() << "-=-=-=-=- : " << strStyle;
-            pMenu->setStyleSheet(strStyle);
-        }
-    }*/
+    qDebug() << "==^^^^^^^^^^^^^^^^^^^^^ m2 shortcut";
 }
 
 bool CMenuBar::event(QEvent *event)

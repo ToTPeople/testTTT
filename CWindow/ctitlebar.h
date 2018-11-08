@@ -11,12 +11,15 @@ public:
     CTitleBar(QWidget* parent = NULL);
     ~CTitleBar();
 
+public:
+    void setMaximizeIconVisiable(bool bVisiable = true);
+
 signals:
     void sigOnMinimizeBtnClick();
     void sigOnMaximizeBtnClick();
     void sigOnExitBtnClick();
 
-private:
+protected:
     CTitleBarPrivate&           p;
 };
 

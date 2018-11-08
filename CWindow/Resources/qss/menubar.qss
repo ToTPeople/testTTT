@@ -1,6 +1,0 @@
-
-CMenuBar {
-	qproperty-menuNormalBg	  :gray;
-	qproperty-menuHoverBg	  :green;
-	qproperty-menuSelectedBg  :red;
-}

@@ -26,6 +26,7 @@ QPushButton:pressed {
 }
 
 CMenuItem {
+	width		: 100px;
 	background-color	: gray;
 }
 
@@ -37,33 +38,14 @@ CMenuItem:pressed {
 	background-color	: red;
 }
 
-/*
-QWidget#myMenuBar {
-	qproperty-menuNormalBg	  :gray;
-	qproperty-menuHoverBg	  :green
-}
-*/
-
-/*
-QPushButton#btnFile, QPushButton#btnAbout {
-	margin	: 0px;
-	padding	: 0px;
-	border	: 0px;
-	background-color	: gray;
-}
-
-QPushButton#btnFile:hover, QPushButton#btnAbout:hover {
-	background-color	: green;
-}
-
-QPushButton#btnFile:pressed, QPushButton#btnAbout:pressed {
-	background-color	: red;
-}
-*/
-QPushButton::menu-indicator {
+CMenuItem::menu-indicator {
 	image	: None;
 	margin	: 0px;
 	padding	: 0px;
+}
+
+CMenuBar {
+	qproperty-menuItemSpace	: 10;
 }
 
 	
