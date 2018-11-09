@@ -41,7 +41,7 @@ public:
 public:
     CWindow*        m_pWindow;
     Ui::Window      m_ui;
-    QWidget*        m_pTitleBar;
+    CTitleBar*      m_pTitleBar;
     QWidget*        m_pMenuBar;
     QWidget*        m_pCenterWidget;
     QWidget*        m_pStatusBar;
@@ -116,6 +116,16 @@ void CWindowPrivate::init()
     }
 
     m_ui.setupUi(m_pWindow);
+
+    m_pTitleBar = new CTitleBar(m_pWindow);
+    if (NULL != m_pTitleBar) {
+        m_pTitleBar->setFixedHeight(FIXED_TITLEBAR_HEIGHT);
+        m_ui.vLayoutWindow->insertWidget(TITLEBAR_INDEX, m_pTitleBar);
+
+        QObject::connect(m_pTitleBar, SIGNAL(sigOnExitBtnClick()), m_pWindow, SLOT(slotOnExitClick()));
+        QObject::connect(m_pTitleBar, SIGNAL(sigOnMinimizeBtnClick()), m_pWindow, SLOT(slotOnMinimizeClick()));
+        QObject::connect(m_pTitleBar, SIGNAL(sigOnMaximizeBtnClick()), m_pWindow, SLOT(slotOnMaximizeClick()));
+    }
     m_pMenuBar = m_ui.wgtMenuBar;
     m_pCenterWidget = m_ui.wgtCenterWidget;
     m_pStatusBar = m_ui.wgtStatusBar;
@@ -163,7 +173,7 @@ CWindow::~CWindow()
     delete &p;
 }
 
-void CWindow::setTitleBar(QWidget * pTitleBar)
+void CWindow::setTitleBar(CTitleBar * pTitleBar)
 {
     // title bar must have
     if (NULL == pTitleBar) {
@@ -178,7 +188,7 @@ void CWindow::setTitleBar(QWidget * pTitleBar)
     QObject::connect(pTitleBar, SIGNAL(sigOnMaximizeBtnClick()), this, SLOT(slotOnMaximizeClick()));
 }
 
-QWidget * CWindow::getTitleBar()
+CTitleBar * CWindow::getTitleBar()
 {
     return p.m_pTitleBar;
 }
@@ -216,6 +226,26 @@ QWidget * CWindow::getStatusBar()
     return p.m_pStatusBar;
 }
 
+void CWindow::setTitle(const QString & strTitle)
+{
+    if (NULL != p.m_pTitleBar) {
+        p.m_pTitleBar->setTitle(strTitle);
+    }
+}
+
+QString CWindow::getTitle()
+{
+    if (NULL != p.m_pTitleBar) {
+        return p.m_pTitleBar->getTitle();
+    }
+    return QString();
+}
+
+void CWindow::retranslateUi()
+{
+    p.m_ui.retranslateUi(this);
+}
+
 void CWindow::slotOnExitClick()
 {
     close();
@@ -244,7 +274,7 @@ void CWindow::mousePressEvent(QMouseEvent * event)
         return QWidget::mouseMoveEvent(event);
     }
 
-    QWidget* pTitleBar = getTitleBar();
+    CTitleBar* pTitleBar = getTitleBar();
     if (event->button() == Qt::LeftButton && NULL != pTitleBar &&
         pTitleBar->rect().contains(event->globalPos() - this->frameGeometry().topLeft())) {
         p.m_MousePressPos = event->globalPos();
@@ -316,4 +346,13 @@ void CWindow::mouseMoveEvent(QMouseEvent * event)
     }
 
     event->ignore();
+}
+
+void CWindow::changeEvent(QEvent * event)
+{
+    if (NULL != event && QEvent::LanguageChange == event->type()) {
+        retranslateUi();
+        return;
+    }
+    QWidget::changeEvent(event);
 }

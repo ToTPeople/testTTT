@@ -22,7 +22,7 @@ public:
 public:
     virtual bool eventFilter(QObject *watched, QEvent *event);
     virtual void resizeEvent(QResizeEvent *event);
-    virtual void changeEvent(QEvent *event); // ²âÊÔÓÃ£¬¿ÉÉ¾³ı
+    virtual void changeEvent(QEvent *event);
 
     bool event(QEvent *event) Q_DECL_OVERRIDE; // ²âÊÔÓÃ£¬¿ÉÉ¾³ı
 

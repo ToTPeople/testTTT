@@ -12,7 +12,15 @@ public:
     ~CTitleBar();
 
 public:
+    void setTitle(const QString& strTitle);
+    QString getTitle();
+
     void setMaximizeIconVisiable(bool bVisiable = true);
+
+    virtual void retranslateUi();
+
+public:
+    virtual void changeEvent(QEvent *event);
 
 signals:
     void sigOnMinimizeBtnClick();

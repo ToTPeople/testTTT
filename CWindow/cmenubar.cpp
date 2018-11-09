@@ -12,6 +12,7 @@
 #include <QCursor>
 #include "common_define.h"
 #include "cmenuitem.h"
+#include "ctranlatorhelper.h"
 
 
 namespace {
@@ -22,12 +23,24 @@ class CMenuBarPrivate
 {
     friend CMenuBar;
 public:
+    typedef struct MenuItemTrans {
+        CMenuItem*  pMenuItem;
+        QString     strText;
+    } s_MenuItemTrans;
+    typedef struct ActionTrans {
+        QAction*    pAction;
+        QString     strText;
+    } s_ActionTrans;
+public:
     CMenuBarPrivate(CMenuBar* pMenuBar);
     ~CMenuBarPrivate();
 
 public:
     // CMenuItem
     void insertMenuBarItem(CMenuItem* pMenuBarItem, int nIndex = -1);
+
+    //void recordTranslorText(CMenuItem* pMenuItem, const QString& strText);
+    //void retranslateUi();
 
     CMenuItem* posAt(QPoint pos);
 
@@ -37,6 +50,8 @@ public:
     QVector<CMenuItem*>     m_vecMenusItem;
     int                     m_nCnt;                 // menu item count
     CMenuItem*              m_pPreSelectedItem;     // current selected menu item
+    //QList<MenuItemTrans*>   m_listMenuItemTrans;        // ≥°æ∞easy£¨easy µœ÷
+    //QList<s_ActionTrans*>   m_listActionTrans;
 };
 
 CMenuBarPrivate::CMenuBarPrivate(CMenuBar* pMenuBar)
@@ -54,11 +69,36 @@ CMenuBarPrivate::CMenuBarPrivate(CMenuBar* pMenuBar)
         m_pHLayout->setMargin(0);
     }
     m_vecMenusItem.clear();
+    //m_listMenuItemTrans.clear();
+    //m_listActionTrans.clear();
 }
 
 CMenuBarPrivate::~CMenuBarPrivate()
 {
     m_pMenuBar = NULL;
+    /*QList<s_MenuItemTrans*>::iterator it = m_listMenuItemTrans.begin();
+    s_MenuItemTrans* pMenuTrans = NULL;
+    for (; it != m_listMenuItemTrans.end();) {
+        pMenuTrans = *it;
+        it = m_listMenuItemTrans.erase(it);
+        if (NULL != pMenuTrans) {
+            delete pMenuTrans;
+            pMenuTrans = NULL;
+        }
+    }
+    m_listMenuItemTrans.clear();
+
+    s_ActionTrans* pActionTrans = NULL;
+    QList<s_ActionTrans*>::iterator itAction = m_listActionTrans.begin();
+    for (; itAction != m_listActionTrans.end();) {
+        pActionTrans = *itAction;
+        itAction = m_listActionTrans.erase(itAction);
+        if (NULL != pActionTrans) {
+            delete pActionTrans;
+            pActionTrans = NULL;
+        }
+    }
+    m_listActionTrans.clear();*/
 }
 
 void CMenuBarPrivate::insertMenuBarItem(CMenuItem* pMenuBarItem, int nIndex /* = -1 */)
@@ -67,12 +107,9 @@ void CMenuBarPrivate::insertMenuBarItem(CMenuItem* pMenuBarItem, int nIndex /* =
         return;
     }
 
-    //pMenuBarItem->setFixedWidth(g_nFixedMenuItemWidth);
-    pMenuBarItem->installEventFilter(m_pMenuBar); ///////////////////////
+    pMenuBarItem->installEventFilter(m_pMenuBar);
     pMenuBarItem->menu()->installEventFilter(m_pMenuBar);
     pMenuBarItem->menu()->menuAction()->installEventFilter(m_pMenuBar);
-
-    //QObject::connect(pMenuBarItem, SIGNAL(triggered(bool)), m_pMenuBar, SLOT(slotShortcut()));
 
     if (nIndex <= 0 || nIndex >= m_nCnt) {
         m_vecMenusItem.push_back(pMenuBarItem);
@@ -101,6 +138,67 @@ void CMenuBarPrivate::insertMenuBarItem(CMenuItem* pMenuBarItem, int nIndex /* =
 
     QObject::disconnect(pMenuBarItem, SIGNAL(pressed()), pMenuBarItem, SLOT(_q_popupPressed()));
 }
+
+//void CMenuBarPrivate::recordTranslorText(CMenuItem* pMenuItem, const QString& strText)
+//{
+//    if (NULL == pMenuItem) {
+//        return;
+//    }
+//
+//    s_MenuItemTrans* pMenuItemTrans = new s_MenuItemTrans();
+//    if (NULL != pMenuItemTrans) {
+//        pMenuItemTrans->pMenuItem = pMenuItem;
+//        pMenuItemTrans->strText = strText;
+//
+//        m_listMenuItemTrans.push_back(pMenuItemTrans);
+//    }
+//    QMenu* pMenu = pMenuItem->menu();
+//    if (NULL != pMenu) {
+//        QList<QAction*> listActions = pMenu->actions();
+//        QList<QAction*>::iterator it = listActions.begin();
+//        
+//        QAction* pAction = NULL;
+//        for (; it != listActions.end(); ++it) {
+//            pAction = *it;
+//            if (NULL != pAction) {
+//                s_ActionTrans* pActionTrans = new s_ActionTrans();
+//                if (NULL != pActionTrans) {
+//                    pActionTrans->pAction = pAction;
+//                    pActionTrans->strText = pAction->text();
+//
+//                    m_listActionTrans.push_back(pActionTrans);
+//                }
+//            }
+//        }
+//    }
+//
+//    pMenuItem->setText(QApplication::translate(m_pMenuBar->objectName().toLatin1(), strText.toLatin1(), Q_NULLPTR));
+//}
+//
+//void CMenuBarPrivate::retranslateUi()
+//{
+//    QList<s_MenuItemTrans*>::iterator it = m_listMenuItemTrans.begin();
+//    s_MenuItemTrans* pMenuTrans = NULL;
+//    for (; it != m_listMenuItemTrans.end(); ++it) {
+//        pMenuTrans = *it;
+//        if (NULL != pMenuTrans && NULL != pMenuTrans->pMenuItem) {
+//            pMenuTrans->pMenuItem->setText(
+//                QApplication::translate(m_pMenuBar->objectName().toLatin1(), pMenuTrans->strText.toLatin1(), Q_NULLPTR)
+//            );
+//        }
+//    }
+//
+//    s_ActionTrans* pActionTrans = NULL;
+//    QList<s_ActionTrans*>::iterator itAction = m_listActionTrans.begin();
+//    for (; itAction != m_listActionTrans.end();) {
+//        pActionTrans = *itAction;
+//        if (NULL != pActionTrans && NULL != pActionTrans->pAction) {
+//            pActionTrans->pAction->setText(
+//                QApplication::translate(m_pMenuBar->objectName().toLatin1(), pActionTrans->strText.toLatin1(), Q_NULLPTR)
+//            );
+//        }
+//    }
+//}
 
 CMenuItem* CMenuBarPrivate::posAt(QPoint pos)
 {
@@ -173,7 +271,11 @@ void CMenuBar::addMenu(QMenu * pMenu)
     pNewItem->setText(tr(pMenu->title().toLatin1()));
     pNewItem->setMenu(pMenu);
 
+    //p.recordTranslorText(pNewItem, pMenu->title());
     p.insertMenuBarItem(pNewItem);
+
+    g_pTranlatorHelper->addButtonTransText(pNewItem, pMenu->title());
+    g_pTranlatorHelper->addMenuTransText(pMenu, pMenu->title(), true);
 }
 
 bool CMenuBar::eventFilter(QObject * watched, QEvent * event)
@@ -287,8 +389,10 @@ void CMenuBar::resizeEvent(QResizeEvent * event)
 
 void CMenuBar::changeEvent(QEvent * event)
 {
-    if (QEvent::StyleChange == event->type()) {
-        qDebug() << "***************************** CMenuBar;";
+    if (NULL != event && QEvent::LanguageChange == event->type()) {
+        //p.retranslateUi();
+        g_pTranlatorHelper->retranslateUi();
+        return;
     }
 
     QWidget::changeEvent(event);

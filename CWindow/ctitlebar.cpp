@@ -28,6 +28,7 @@ public:
 #else
     Ui::wgtMacTitleBar  m_uiTitleBar;
 #endif
+    QString             m_strTitle;
 };
 
 CTitleBarPrivate::CTitleBarPrivate(CTitleBar* parent /* = NULL */)
@@ -62,7 +63,7 @@ void CTitleBarPrivate::init()
             , m_pTitleBar, SIGNAL(sigOnMaximizeBtnClick()));
     }
     // test -------------------------------
-    m_uiTitleBar.labelTitle->setText("Windows Title");
+    //m_uiTitleBar.labelTitle->setText(QObject::tr("Windows Title"));
     m_pTitleBar->setAutoFillBackground(true);
     QPalette pal = m_pTitleBar->palette();
     pal.setBrush(QPalette::Background, QBrush(Qt::red));
@@ -82,9 +83,43 @@ CTitleBar::~CTitleBar()
     delete &p;
 }
 
+void CTitleBar::setTitle(const QString & strTitle)
+{
+    p.m_strTitle = strTitle;
+    if (NULL != p.m_uiTitleBar.labelTitle) {
+        p.m_uiTitleBar.labelTitle->setText(QObject::tr(strTitle.toLatin1()));
+    }
+}
+
+QString CTitleBar::getTitle()
+{
+    if (NULL != p.m_uiTitleBar.labelTitle) {
+        return p.m_uiTitleBar.labelTitle->text();
+    }
+    return p.m_strTitle;
+}
+
 void CTitleBar::setMaximizeIconVisiable(bool bVisiable)
 {
     if (!bVisiable && NULL != p.m_uiTitleBar.btnMax) {
         p.m_uiTitleBar.btnMax->hide();
     }
+}
+
+void CTitleBar::retranslateUi()
+{
+    p.m_uiTitleBar.retranslateUi(this);
+    if (NULL != p.m_uiTitleBar.labelTitle) {
+        p.m_uiTitleBar.labelTitle->setText(QObject::tr(p.m_strTitle.toLatin1()));
+    }
+}
+
+void CTitleBar::changeEvent(QEvent * event)
+{
+    if (NULL != event && QEvent::LanguageChange == event->type()) {
+        retranslateUi();
+        return;
+    }
+
+    QWidget::changeEvent(event);
 }
