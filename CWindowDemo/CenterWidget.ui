@@ -13,24 +13,11 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <widget class="QPushButton" name="btnCenterExit">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
-     <x>20</x>
+     <x>150</x>
      <y>120</y>
-     <width>101</width>
-     <height>51</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Exit</string>
-   </property>
-  </widget>
-  <widget class="QWidget" name="">
-   <property name="geometry">
-    <rect>
-     <x>190</x>
-     <y>130</y>
      <width>77</width>
      <height>54</height>
     </rect>

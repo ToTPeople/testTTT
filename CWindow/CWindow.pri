@@ -13,12 +13,14 @@ HEADERS += ./qtclasslibrary_global.h \
     ./cbasewindow.h \
     ./ctitlebar.h \
     ./common_define.h \
-    ./cmenuitem.h
+    ./cmenuitem.h \
+    ./ctranlatorhelper.h
 SOURCES += ./cbasewindow.cpp \
     ./cmenubar.cpp \
     ./ctitlebar.cpp \
     ./window.cpp \
-    ./cmenuitem.cpp
+    ./cmenuitem.cpp \
+    ./ctranlatorhelper.cpp
 FORMS += ./window.ui \
     ./titlebar.ui \
     ./mactitlebar.ui

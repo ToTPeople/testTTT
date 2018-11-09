@@ -1,4 +1,6 @@
 <RCC>
-    <qresource prefix="CWindowDemo">
+    <qresource prefix="/language">
+        <file alias="English.qm">cwindowdemo_en.qm</file>
+        <file alias="Chinese.qm">cwindowdemo_zh.qm</file>
     </qresource>
 </RCC>

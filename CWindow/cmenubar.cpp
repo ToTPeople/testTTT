@@ -362,18 +362,21 @@ bool CMenuBar::eventFilter(QObject * watched, QEvent * event)
                 QPoint st = p.m_pPreSelectedItem->mapToGlobal(QPoint());
                 QPoint en = p.m_pPreSelectedItem->mapToGlobal(QPoint(p.m_pPreSelectedItem->width(), p.m_pPreSelectedItem->height()));
                 QRect rcItem(st, en);
+#if defined Q_OS_WIN
                 if (!rcItem.contains(cursorPos)) {
                     p.m_pPreSelectedItem->setDown(false);
                     p.m_pPreSelectedItem = NULL;
                 }
+#else
+                if (!rcItem.contains(cursorPos)) {
+                    QEvent etLeave(QEvent::Leave);
+                    QApplication::sendEvent(p.m_pPreSelectedItem, &etLeave);
+                }
+                p.m_pPreSelectedItem->setDown(false);
+                p.m_pPreSelectedItem = NULL;
+#endif
             }
         }
-    }
-    else if (watched->inherits("Action")) {
-        qDebug() << "==$$$$$$$$$$$$-- Action : " << event->type();
-    }
-    else if (NULL != watched) {
-        qDebug() << "==$$$$$$$$$$$$-- : " << watched << ", event type: " << event->type();
     }
 
     return QWidget::eventFilter(watched, event);
@@ -390,7 +393,6 @@ void CMenuBar::resizeEvent(QResizeEvent * event)
 void CMenuBar::changeEvent(QEvent * event)
 {
     if (NULL != event && QEvent::LanguageChange == event->type()) {
-        //p.retranslateUi();
         g_pTranlatorHelper->retranslateUi();
         return;
     }

@@ -17,33 +17,28 @@ namespace {
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    /*CWindowDemo w;
-    w.show();*/
 
-    /*CBaseWindow ss;
-    ss.show();*/
     CWindow tt;
 
 #ifdef CUSTOMER_TITLEBAR
+    ///////////////////////////// titlebar //////////////////////////////////
+    {
+        CTitleBar* pTitleBar = tt.getTitleBar();
+        if (NULL != pTitleBar) {
+            pTitleBar->setTitle(QObject::tr("Windows Title"));
+            pTitleBar->setAutoFillBackground(true);
+            QPalette pal = pTitleBar->palette();
+            pal.setBrush(QPalette::Background, QBrush(Qt::red));
+            pTitleBar->setPalette(pal);
+        }
+    }
     ///////////////////////////// menubar //////////////////////////////////
-    tt.setTitle(QObject::tr("Windows Title"));
-    //QWidget* pWgt = new QWidget(&tt);
-    //tt.setTitleBar(pWgt);
-    //tt.setMenuBar(pWgt);
-    //tt.setCenterWidget(pWgt);
-    //tt.setStatusBar(pWgt);
-    /*QMenuBar* pBar = new QMenuBar();
-    pBar->addAction("File");*/
     QMenu* pMenu = new QMenu(QObject::tr("About"));
     pMenu->addAction(QObject::tr("VS 2017"));
     pMenu->addAction(QObject::tr("Qt"));
     pMenu->setShortcutEnabled(Qt::ALT | Qt::Key_J, true);
-    //pBar->addMenu(pMenu);
-
-    //tt.setMenuBar(pBar);
 
     QMenu* m2 = new QMenu(QObject::tr("&File"));
-    //QMenu* m2 = new QMenu("File(&F)");
     m2->addAction(QObject::tr("New"));
     m2->addAction(QObject::tr("Create"));
     m2->addSeparator();
@@ -68,7 +63,7 @@ int main(int argc, char *argv[])
     pMenuBar->addMenu(pMenu);
     pMenuBar->addAction(QObject::tr("Test"));
 
-    ///////
+    /////// background
     pMenuBar->setAutoFillBackground(true);
     QPalette pal = pMenuBar->palette();
     pal.setBrush(QPalette::Background, QBrush(Qt::darkCyan));
@@ -76,11 +71,23 @@ int main(int argc, char *argv[])
     ///////
 
     tt.setMenuBar(pMenuBar);
-    //pMenuBar->adjustSize();
-#endif
 
+    ///////////////////////////// Center //////////////////////////////////
     CWindowDemo centerWidget(&a);
     tt.setCenterWidget(&centerWidget);
+    ///////////////////////////// StatusBar //////////////////////////////////
+    {
+        QWidget* pStatusBar = new QWidget(&tt);
+        if (NULL != pStatusBar) {
+            pStatusBar->setAutoFillBackground(true);
+            QPalette pal = pStatusBar->palette();
+            pal.setBrush(QPalette::Background, QBrush(Qt::green));
+            pStatusBar->setPalette(pal);
+
+            tt.setStatusBar(pStatusBar);
+        }
+    }
+#endif
 
     tt.show();
 

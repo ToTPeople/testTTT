@@ -129,26 +129,6 @@ void CWindowPrivate::init()
     m_pMenuBar = m_ui.wgtMenuBar;
     m_pCenterWidget = m_ui.wgtCenterWidget;
     m_pStatusBar = m_ui.wgtStatusBar;
-    // test ----------------------------------------
-    {
-        m_ui.wgtMenuBar->setAutoFillBackground(true);
-        QPalette pal = m_ui.wgtMenuBar->palette();
-        pal.setBrush(QPalette::Background, QBrush(Qt::blue));
-        m_ui.wgtMenuBar->setPalette(pal);
-    }
-    {
-        m_pCenterWidget->setAutoFillBackground(true);
-        QPalette pal = m_pCenterWidget->palette();
-        pal.setBrush(QPalette::Background, QBrush(Qt::black));
-        m_pCenterWidget->setPalette(pal);
-    }
-    {
-        m_ui.wgtStatusBar->setAutoFillBackground(true);
-        QPalette pal = m_ui.wgtStatusBar->palette();
-        pal.setBrush(QPalette::Background, QBrush(Qt::green));
-        m_ui.wgtStatusBar->setPalette(pal);
-    }
-    // test ----------------------------------------
 }
 
 

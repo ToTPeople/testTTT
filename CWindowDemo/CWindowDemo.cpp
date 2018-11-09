@@ -4,8 +4,8 @@
 
 
 namespace {
-    const char* const kszEnglishTranslator = "./cwindowdemo_en.qm";
-    const char* const kszChineseTranslator = "./cwindowdemo_zh.qm";
+    const char* const kszEnglishTranslator = ":/language/English.qm";
+    const char* const kszChineseTranslator = ":/language/Chinese.qm";
 }
 
 CWindowDemo::CWindowDemo(QApplication* pApp, QWidget *parent)
@@ -14,8 +14,6 @@ CWindowDemo::CWindowDemo(QApplication* pApp, QWidget *parent)
     , m_pApp(pApp)
 {
     ui.setupUi(this);
-
-    ui.btnCenterExit->setShortcut(Qt::Key_Alt | Qt::Key_C);
 
     connect(ui.btnEnglish, SIGNAL(clicked()), this, SLOT(slotOnEnglishClick()));
     connect(ui.btnChinese, SIGNAL(clicked()), this, SLOT(slotOnChineseClick()));

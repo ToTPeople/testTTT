@@ -62,13 +62,6 @@ void CTitleBarPrivate::init()
         QObject::connect(m_uiTitleBar.btnMax, SIGNAL(clicked())
             , m_pTitleBar, SIGNAL(sigOnMaximizeBtnClick()));
     }
-    // test -------------------------------
-    //m_uiTitleBar.labelTitle->setText(QObject::tr("Windows Title"));
-    m_pTitleBar->setAutoFillBackground(true);
-    QPalette pal = m_pTitleBar->palette();
-    pal.setBrush(QPalette::Background, QBrush(Qt::red));
-    m_pTitleBar->setPalette(pal);
-    // test -------------------------------
 }
 
 CTitleBar::CTitleBar(QWidget* parent /*= NULL*/)
