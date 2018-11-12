@@ -44,3 +44,12 @@ void CWindowDemo::slotOnChineseClick()
     m_pCurTranslator->load(kszChineseTranslator);
     m_pApp->installTranslator(m_pCurTranslator);
 }
+
+void CWindowDemo::changeEvent(QEvent * event)
+{
+    if (NULL != event && QEvent::LanguageChange == event->type()) {
+        ui.retranslateUi(this);
+    }
+
+    QWidget::changeEvent(event);
+}

@@ -25,6 +25,13 @@ QPushButton:pressed {
 	background-color	: red;
 }
 
+CWindow {
+	qproperty-titleBarHeight	: 45;
+	qproperty-menuBarHeight	: 50;
+	qproperty-statusBarHeight	: 20;
+	qproperty-widgetSpace		: 1;
+}
+
 CMenuItem {
 	width		: 100px;
 	background-color	: gray;
@@ -45,7 +52,7 @@ CMenuItem::menu-indicator {
 }
 
 CMenuBar {
-	qproperty-menuItemSpace	: 10;
+	qproperty-menuItemSpace	: 0;
 }
 
 	

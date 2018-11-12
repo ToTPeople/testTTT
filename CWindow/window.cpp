@@ -45,6 +45,12 @@ public:
     QWidget*        m_pMenuBar;
     QWidget*        m_pCenterWidget;
     QWidget*        m_pStatusBar;
+
+public:
+    // property
+    int             m_nTitleBarHeight;
+    int             m_nMenuBarHeight;
+    int             m_nStatusHeight;
 };
 
 CWindowPrivate::CWindowPrivate(CWindow * parent /* = NULL */)
@@ -56,6 +62,9 @@ CWindowPrivate::CWindowPrivate(CWindow * parent /* = NULL */)
     , m_pStatusBar(NULL)
     , m_pMenuBar(NULL)
     , m_pCenterWidget(NULL)
+    , m_nTitleBarHeight(-1)
+    , m_nMenuBarHeight(-1)
+    , m_nStatusHeight(-1)
 {
     init();
 }
@@ -160,7 +169,8 @@ void CWindow::setTitleBar(CTitleBar * pTitleBar)
         return;
     }
 
-    p.replaceWidget(p.m_pTitleBar, pTitleBar, TITLEBAR_INDEX, FIXED_TITLEBAR_HEIGHT);
+    p.replaceWidget(p.m_pTitleBar, pTitleBar, TITLEBAR_INDEX
+        , (p.m_nTitleBarHeight > 0) ? p.m_nTitleBarHeight : FIXED_TITLEBAR_HEIGHT);
     p.m_pTitleBar = pTitleBar;
 
     QObject::connect(pTitleBar, SIGNAL(sigOnExitBtnClick()), this, SLOT(slotOnExitClick()));
@@ -175,7 +185,8 @@ CTitleBar * CWindow::getTitleBar()
 
 void CWindow::setMenuBar(QWidget * pMenuBar)
 {
-    p.replaceWidget(p.m_pMenuBar, pMenuBar, MENUBAR_INDEX, FIXED_MENUBAR_HEIGHT);
+    p.replaceWidget(p.m_pMenuBar, pMenuBar, MENUBAR_INDEX
+        , (p.m_nMenuBarHeight > 0) ? p.m_nMenuBarHeight : FIXED_MENUBAR_HEIGHT);
     p.m_pMenuBar = pMenuBar;
 }
 
@@ -197,7 +208,8 @@ QWidget * CWindow::getCenterWidget()
 
 void CWindow::setStatusBar(QWidget * pStatusBar)
 {
-    p.replaceWidget(p.m_pStatusBar, pStatusBar, STATUSBAR_INDEX, FIXED_STATUSBAR_HEIGHT);
+    p.replaceWidget(p.m_pStatusBar, pStatusBar, STATUSBAR_INDEX
+        , (p.m_nStatusHeight > 0) ? p.m_nStatusHeight : FIXED_STATUSBAR_HEIGHT);
     p.m_pStatusBar = pStatusBar;
 }
 
@@ -219,6 +231,72 @@ QString CWindow::getTitle()
         return p.m_pTitleBar->getTitle();
     }
     return QString();
+}
+
+int CWindow::titleBarHeight()
+{
+    return (p.m_nTitleBarHeight <=0 ) ? FIXED_TITLEBAR_HEIGHT : p.m_nTitleBarHeight;
+}
+
+void CWindow::setTitleBarHeight(int nTitleBarHeight)
+{
+    if (nTitleBarHeight < 0) {
+        nTitleBarHeight = 0;
+    }
+    p.m_nTitleBarHeight = nTitleBarHeight;
+    if (nTitleBarHeight > 0 && NULL != p.m_pTitleBar && nTitleBarHeight != p.m_pTitleBar->height()) {
+        p.m_pTitleBar->setFixedHeight(nTitleBarHeight);
+    }
+}
+
+int CWindow::menuBarHeight()
+{
+    return (p.m_nMenuBarHeight <= 0) ? FIXED_MENUBAR_HEIGHT : p.m_nMenuBarHeight;
+}
+
+void CWindow::setMenuBarHeight(int nMenuBarHeight)
+{
+    if (nMenuBarHeight < 0) {
+        nMenuBarHeight = 0;
+    }
+    p.m_nMenuBarHeight = nMenuBarHeight;
+    if (nMenuBarHeight > 0 && NULL != p.m_pMenuBar && nMenuBarHeight != p.m_pMenuBar->height()) {
+        p.m_pMenuBar->setFixedHeight(nMenuBarHeight);
+    }
+}
+
+int CWindow::statusBarHeight()
+{
+    return (p.m_nStatusHeight <= 0) ? FIXED_STATUSBAR_HEIGHT : p.m_nStatusHeight;
+}
+
+void CWindow::setStatusBarHeight(int nStatusBarHeight)
+{
+    if (nStatusBarHeight < 0) {
+        nStatusBarHeight = 0;
+    }
+    p.m_nStatusHeight = nStatusBarHeight;
+    if (nStatusBarHeight > 0 && NULL != p.m_pStatusBar && nStatusBarHeight != p.m_pStatusBar->height()) {
+        p.m_pStatusBar->setFixedHeight(nStatusBarHeight);
+    }
+}
+
+int CWindow::widgetSpace()
+{
+    if (NULL == p.m_ui.vLayoutWindow) {
+        return 0;
+    }
+    return p.m_ui.vLayoutWindow->spacing();
+}
+
+void CWindow::setWidgetSpace(int nWidgetSpace)
+{
+    if (nWidgetSpace < 0 || NULL == p.m_ui.vLayoutWindow) {
+        return;
+    }
+    if (nWidgetSpace != p.m_ui.vLayoutWindow->spacing()) {
+        p.m_ui.vLayoutWindow->setSpacing(nWidgetSpace);
+    }
 }
 
 void CWindow::retranslateUi()

@@ -1,5 +1,7 @@
 #pragma once
 
+//#define SHORTCUT_TEST
+
 #define DELETE(p)       do { if (NULL != p) { delete p; p = NULL; } } while(0);
 
 // size

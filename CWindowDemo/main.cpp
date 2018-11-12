@@ -5,10 +5,10 @@
 #include <QShortcut>
 #include <QKeySequence>
 #include <QTranslator>
-#include "cbasewindow.h"
 #include "window.h"
 #include "cmenubar.h"
 #include "ctitlebar.h"
+#include "common_define.h"
 
 namespace {
 #define CUSTOMER_TITLEBAR
@@ -51,13 +51,11 @@ int main(int argc, char *argv[])
     CMenuBar* pMenuBar = new CMenuBar(&tt);
     pMenuBar->setObjectName(QStringLiteral("myMenuBar"));
 
+#ifdef SHORTCUT_TEST
     QShortcut* shortCut = new QShortcut(QKeySequence(QObject::tr("Ctrl+E")), pMenuBar);
-    //QShortcut* shortCut = new QShortcut(QKeySequence(Qt::Key_E), pMenuBar);
-    //QShortcut *shortCut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_Left), pMenuBar);
     QObject::connect(shortCut, SIGNAL(activated()), pMenuBar, SLOT(slotShortcut()));
-    //QObject::connect(m2, SIGNAL(activated()), pMenuBar, SLOT(slotShortcut()));
-
     QObject::connect(pA, SIGNAL(triggered(bool)), pMenuBar, SLOT(slotShortcut()));
+#endif
 
     pMenuBar->addMenu(m2);
     pMenuBar->addMenu(pMenu);

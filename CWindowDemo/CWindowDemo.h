@@ -16,6 +16,9 @@ public slots:
     void slotOnEnglishClick();
     void slotOnChineseClick();
 
+public:
+    virtual void changeEvent(QEvent *event);
+
 private:
     Ui::wgtCenter       ui;
     QTranslator*        m_pCurTranslator;

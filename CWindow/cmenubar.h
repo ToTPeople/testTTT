@@ -1,6 +1,7 @@
 #pragma once
 #include <qwidget.h>
 #include "qtclasslibrary_global.h"
+#include "common_define.h"
 
 
 class QMenu;
@@ -24,10 +25,12 @@ public:
     virtual void resizeEvent(QResizeEvent *event);
     virtual void changeEvent(QEvent *event);
 
+#ifdef SHORTCUT_TEST
     bool event(QEvent *event) Q_DECL_OVERRIDE; // 测试用，可删除
 
 public slots:
-    void slotShortcut();            // 测试用，可删除
+    void slotShortcut();            // shortcut测试用，可删除
+#endif
 
 public:
     int menuItemSpace();

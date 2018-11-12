@@ -11,6 +11,6 @@ HEADERS += ./CWindowDemo.h
 SOURCES += ./CWindowDemo.cpp \
     ./main.cpp
 FORMS += ./CenterWidget.ui
-TRANSLATIONS += ./cwindowdemo_zh.ts \
-    ./cwindowdemo_en.ts
+TRANSLATIONS += ./cwindowdemo_en.ts \
+    ./cwindowdemo_zh.ts
 RESOURCES += CWindowDemo.qrc

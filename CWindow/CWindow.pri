@@ -8,20 +8,18 @@ message("You are running qmake on a generated .pro file. This may not work!")
 
 
 HEADERS += ./qtclasslibrary_global.h \
-    ./cmenubar.h \
     ./window.h \
-    ./cbasewindow.h \
-    ./ctitlebar.h \
     ./common_define.h \
+    ./ctranlatorhelper.h \
     ./cmenuitem.h \
-    ./ctranlatorhelper.h
-SOURCES += ./cbasewindow.cpp \
-    ./cmenubar.cpp \
-    ./ctitlebar.cpp \
-    ./window.cpp \
+    ./cmenubar.h \
+    ./ctitlebar.h
+SOURCES += ./window.cpp \
+    ./ctranlatorhelper.cpp \
     ./cmenuitem.cpp \
-    ./ctranlatorhelper.cpp
-FORMS += ./window.ui \
+    ./cmenubar.cpp \
+    ./ctitlebar.cpp
+FORMS += ./mactitlebar.ui \
     ./titlebar.ui \
-    ./mactitlebar.ui
+    ./window.ui
 RESOURCES += Resource.qrc
